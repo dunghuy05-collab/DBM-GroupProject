@@ -851,6 +851,61 @@ Sau đó chạy:
 python src/pattern_mining.py
 ```
 
+---
+
+## 20. Bước 8: Chạy toàn bộ pipeline
+
+Sau khi đã có từng file riêng cho từng bước, ta tạo thêm một file tổng hợp để chạy toàn bộ project theo đúng thứ tự.
+
+File code:
+
+```text
+src/run_pipeline.py
+```
+
+File này chạy lần lượt:
+
+```text
+1. Đọc và kiểm tra dữ liệu gốc
+2. Làm sạch dữ liệu
+3. Gom dữ liệu theo giờ/ngày
+4. EDA
+5. Anomaly detection bằng Z-score
+6. Pattern mining bằng Apriori
+```
+
+### 20.1. Vì sao cần file pipeline?
+
+Nếu không có pipeline, mỗi lần chạy lại project phải nhớ nhiều lệnh:
+
+```powershell
+python src/preprocess_data.py
+python src/resample_data.py
+python src/eda_analysis.py
+python src/anomaly_detection.py
+python src/pattern_mining.py
+```
+
+Với pipeline, chỉ cần chạy một lệnh:
+
+```powershell
+python src/run_pipeline.py
+```
+
+### 20.2. Output sau khi chạy pipeline
+
+Pipeline sẽ tạo/cập nhật:
+
+```text
+data/processed/clean_power_consumption.csv
+data/processed/hourly_consumption.csv
+data/processed/daily_consumption.csv
+outputs/tables/
+outputs/figures/
+```
+
+Các file dữ liệu và output này chỉ lưu local, không commit lên GitHub.
+
 Các cột quan trọng:
 
 | Cột | Ý nghĩa |
