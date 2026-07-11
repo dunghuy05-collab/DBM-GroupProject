@@ -714,6 +714,143 @@ Sau đó chạy:
 python src/anomaly_detection.py
 ```
 
+---
+
+## 19. Bước 7: Pattern Mining bằng Apriori
+
+Sau khi đã phân tích EDA và phát hiện bất thường, bước tiếp theo là tìm các mẫu tiêu thụ điện phổ biến.
+
+File code cho bước này:
+
+```text
+src/pattern_mining.py
+```
+
+### 19.1. Pattern Mining để làm gì?
+
+Pattern Mining giúp tìm các mối quan hệ thường xuất hiện trong dữ liệu.
+
+Ví dụ:
+
+```text
+Nếu weekend_yes và evening_usage_high
+thì total_usage_high
+```
+
+Nghĩa là:
+
+```text
+Nếu là cuối tuần và dùng điện buổi tối cao
+thì tổng điện tiêu thụ cả ngày thường cũng cao.
+```
+
+### 19.2. Vì sao phải biến dữ liệu thành transaction?
+
+Apriori không làm việc trực tiếp với số liên tục như:
+
+```text
+daily_consumption = 32.5
+evening_usage_ratio = 0.41
+```
+
+Vì vậy ta chuyển các giá trị này thành nhãn:
+
+```text
+total_usage_low
+total_usage_medium
+total_usage_high
+```
+
+Một ngày sau khi chuyển thành transaction có thể trông như:
+
+```text
+weekend_yes, total_usage_high, evening_usage_high, night_usage_medium
+```
+
+### 19.3. Các nhóm nhãn được tạo
+
+| Nhóm | Ý nghĩa |
+|---|---|
+| `total_usage_low/medium/high` | Tổng điện tiêu thụ trong ngày |
+| `evening_usage_low/medium/high` | Tỷ lệ dùng điện buổi tối |
+| `night_usage_low/medium/high` | Tỷ lệ dùng điện ban đêm |
+| `peak_hour_usage_low/medium/high` | Mức tiêu thụ cao nhất trong một giờ của ngày |
+| `weekend_yes/weekend_no` | Có phải cuối tuần không |
+
+Các mức `low`, `medium`, `high` được chia bằng quantile, tức là chia dữ liệu thành ba nhóm có số lượng gần bằng nhau.
+
+### 19.4. Thuật toán Apriori
+
+Apriori tìm các itemset xuất hiện thường xuyên trong transaction.
+
+Ví dụ itemset:
+
+```text
+weekend_yes, total_usage_high
+```
+
+Nếu itemset này xuất hiện nhiều, nó được gọi là frequent itemset.
+
+Trong project này dùng:
+
+```text
+min_support = 0.08
+```
+
+Nghĩa là một pattern phải xuất hiện trong ít nhất khoảng 8% số ngày.
+
+### 19.5. Luật kết hợp
+
+Từ frequent itemset, ta tạo association rules.
+
+Ví dụ:
+
+```text
+weekend_yes -> total_usage_high
+```
+
+Các chỉ số chính:
+
+| Chỉ số | Ý nghĩa |
+|---|---|
+| `support` | Luật xuất hiện trong bao nhiêu phần trăm dữ liệu |
+| `confidence` | Nếu có vế trái thì xác suất có vế phải là bao nhiêu |
+| `lift` | Mức độ liên quan giữa vế trái và vế phải |
+
+Công thức:
+
+```text
+support(A -> B) = count(A and B) / total_transactions
+confidence(A -> B) = count(A and B) / count(A)
+lift(A -> B) = confidence(A -> B) / support(B)
+```
+
+Nếu `lift > 1`, A và B có quan hệ tích cực với nhau.
+
+### 19.6. Output của bước này
+
+Script tạo các file:
+
+```text
+outputs/tables/daily_transactions.csv
+outputs/tables/frequent_itemsets.csv
+outputs/tables/association_rules.csv
+```
+
+### 19.7. Cách chạy
+
+Trước tiên cần có dữ liệu theo ngày:
+
+```powershell
+python src/resample_data.py
+```
+
+Sau đó chạy:
+
+```powershell
+python src/pattern_mining.py
+```
+
 Các cột quan trọng:
 
 | Cột | Ý nghĩa |
