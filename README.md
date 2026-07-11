@@ -489,3 +489,97 @@ data/processed/clean_power_consumption.csv
 ```
 
 File này không được commit lên GitHub vì dữ liệu khá lớn.
+
+---
+
+## 16. Bước 4: Gom dữ liệu theo giờ và theo ngày
+
+Sau khi có dữ liệu sạch theo từng phút, ta gom dữ liệu lại thành hai mức:
+
+```text
+hourly_consumption.csv
+daily_consumption.csv
+```
+
+File code cho bước này:
+
+```text
+src/resample_data.py
+```
+
+### 16.1. Vì sao cần gom dữ liệu?
+
+Dữ liệu gốc có hơn 2 triệu dòng vì mỗi phút có một bản ghi.
+
+Nếu phân tích trực tiếp theo từng phút thì:
+
+- Dữ liệu lớn.
+- Biểu đồ khó đọc.
+- Việc phát hiện pattern theo ngày/giờ khó hơn.
+
+Vì vậy ta gom dữ liệu:
+
+| Mức dữ liệu | Ý nghĩa | Dùng để làm gì |
+|---|---|---|
+| Theo giờ | Tổng điện tiêu thụ trong từng giờ | Phân tích giờ cao điểm, heatmap |
+| Theo ngày | Tổng điện tiêu thụ trong từng ngày | Phát hiện ngày bất thường, phân tích xu hướng |
+
+### 16.2. Dữ liệu theo giờ
+
+Dữ liệu theo giờ được tạo bằng cách lấy tổng `energy_kwh` trong từng giờ.
+
+Ví dụ:
+
+```text
+2006-12-16 17:00:00 -> tổng điện từ 17:00 đến 17:59
+2006-12-16 18:00:00 -> tổng điện từ 18:00 đến 18:59
+```
+
+File đầu ra:
+
+```text
+data/processed/hourly_consumption.csv
+```
+
+### 16.3. Dữ liệu theo ngày
+
+Dữ liệu theo ngày được tạo từ dữ liệu theo giờ.
+
+File đầu ra:
+
+```text
+data/processed/daily_consumption.csv
+```
+
+Các cột quan trọng:
+
+| Cột | Ý nghĩa |
+|---|---|
+| `daily_consumption` | Tổng điện tiêu thụ trong ngày |
+| `avg_hourly_consumption` | Điện tiêu thụ trung bình mỗi giờ |
+| `max_hourly_consumption` | Giờ tiêu thụ cao nhất trong ngày |
+| `evening_usage_ratio` | Tỷ lệ điện dùng buổi tối |
+| `night_usage_ratio` | Tỷ lệ điện dùng ban đêm |
+| `rolling_mean_7d` | Trung bình trượt 7 ngày |
+| `is_weekend` | Có phải cuối tuần không |
+
+### 16.4. Cách chạy bước resampling
+
+Trước tiên phải chạy clean data:
+
+```powershell
+python src/preprocess_data.py
+```
+
+Sau đó chạy:
+
+```powershell
+python src/resample_data.py
+```
+
+Kết quả sẽ tạo hai file:
+
+```text
+data/processed/hourly_consumption.csv
+data/processed/daily_consumption.csv
+```
