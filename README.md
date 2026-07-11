@@ -323,3 +323,79 @@ Từ đó, project có thể tiếp tục làm:
 - Anomaly detection.
 - Dashboard.
 
+---
+
+## 13. Bước hiện tại của project
+
+Hiện tại project đang ở bước:
+
+```text
+Bước 2: Đọc và kiểm tra dữ liệu gốc
+```
+
+Mục tiêu của bước này chưa phải là làm sạch dữ liệu. Mục tiêu chỉ là kiểm tra:
+
+- File dataset có đọc được không.
+- Dataset có bao nhiêu dòng và bao nhiêu cột.
+- Tên các cột là gì.
+- 5 dòng đầu tiên trông như thế nào.
+- Kiểu dữ liệu ban đầu của từng cột.
+- Cột nào có missing values.
+
+Các file/thư mục đã tạo cho bước này:
+
+```text
+data/raw/.gitkeep
+data/processed/.gitkeep
+src/load_data.py
+requirements.txt
+.gitignore
+```
+
+Trong đó:
+
+| File/thư mục | Ý nghĩa |
+|---|---|
+| `data/raw/` | Nơi đặt file dữ liệu gốc |
+| `data/processed/` | Nơi lưu dữ liệu sau khi xử lý ở các bước sau |
+| `src/load_data.py` | Code đọc và kiểm tra dữ liệu gốc |
+| `requirements.txt` | Danh sách thư viện Python cần cài |
+| `.gitignore` | Không đẩy file data lớn lên GitHub |
+
+Lưu ý: file dữ liệu gốc khá lớn nên không nên commit lên GitHub.
+
+---
+
+## 14. Cách chạy bước đọc dữ liệu
+
+Trước tiên, tải dataset từ UCI và giải nén file:
+
+```text
+household_power_consumption.txt
+```
+
+Sau đó đặt file vào:
+
+```text
+data/raw/household_power_consumption.txt
+```
+
+Cài thư viện cần thiết:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Chạy script kiểm tra dữ liệu:
+
+```powershell
+python src/load_data.py
+```
+
+Kết quả mong đợi là chương trình sẽ in ra:
+
+- Số dòng, số cột.
+- Danh sách cột.
+- 5 dòng đầu.
+- Kiểu dữ liệu.
+- Số missing values ở từng cột.
