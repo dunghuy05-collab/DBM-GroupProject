@@ -399,3 +399,93 @@ Kết quả mong đợi là chương trình sẽ in ra:
 - 5 dòng đầu.
 - Kiểu dữ liệu.
 - Số missing values ở từng cột.
+
+---
+
+## 15. Bước 3: Làm sạch dữ liệu
+
+Sau khi đã đọc được dữ liệu gốc, bước tiếp theo là làm sạch dữ liệu.
+
+File code cho bước này:
+
+```text
+src/preprocess_data.py
+```
+
+Bước này làm các việc sau:
+
+1. Gộp `Date` và `Time` thành một cột thời gian tên là `datetime`.
+2. Chuyển các cột số sang dạng numeric.
+3. Sắp xếp dữ liệu theo thời gian.
+4. Đưa `datetime` thành index của bảng dữ liệu.
+5. Xử lý missing values bằng nội suy theo thời gian.
+6. Tạo cột `energy_kwh`.
+7. Tạo thêm các feature thời gian: `hour`, `day_of_week`, `month`, `is_weekend`.
+
+### 15.1. Vì sao cần gộp Date và Time?
+
+Dữ liệu gốc có:
+
+```text
+Date = 16/12/2006
+Time = 17:24:00
+```
+
+Sau khi xử lý sẽ thành:
+
+```text
+datetime = 2006-12-16 17:24:00
+```
+
+Nhờ đó ta có thể phân tích dữ liệu theo giờ, ngày, tuần, tháng.
+
+### 15.2. Vì sao xử lý missing values bằng nội suy?
+
+Dữ liệu điện là dữ liệu theo thời gian. Nếu một vài phút bị thiếu, ta có thể ước lượng giá trị bị thiếu dựa vào giá trị trước và sau nó.
+
+Ví dụ:
+
+```text
+10:00 → 0.4 kW
+10:01 → missing
+10:02 → 0.6 kW
+```
+
+Sau nội suy:
+
+```text
+10:01 → khoảng 0.5 kW
+```
+
+### 15.3. Vì sao tạo energy_kwh?
+
+`Global_active_power` có đơn vị kW. Nhưng khi tính điện tiêu thụ, ta thường dùng kWh.
+
+Vì dữ liệu được ghi mỗi phút:
+
+```text
+energy_kwh = Global_active_power / 60
+```
+
+Ví dụ:
+
+```text
+Global_active_power = 1.2 kW
+energy_kwh = 1.2 / 60 = 0.02 kWh
+```
+
+### 15.4. Cách chạy bước clean data
+
+Chạy lệnh:
+
+```powershell
+python src/preprocess_data.py
+```
+
+Sau khi chạy thành công, file dữ liệu sạch sẽ được tạo tại:
+
+```text
+data/processed/clean_power_consumption.csv
+```
+
+File này không được commit lên GitHub vì dữ liệu khá lớn.
