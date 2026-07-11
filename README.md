@@ -622,6 +622,98 @@ Sau đó chạy:
 python src/eda_analysis.py
 ```
 
+---
+
+## 18. Bước 6: Phát hiện bất thường bằng Z-score
+
+Sau EDA, ta bắt đầu phát hiện các ngày tiêu thụ điện bất thường.
+
+File code cho bước này:
+
+```text
+src/anomaly_detection.py
+```
+
+### 18.1. Mục tiêu
+
+Mục tiêu là tìm các ngày có tổng điện tiêu thụ cao hơn hoặc thấp hơn mức bình thường quá nhiều.
+
+Ví dụ:
+
+```text
+Ngày bình thường: khoảng 25 kWh
+Một ngày đặc biệt: 79 kWh
+```
+
+Ngày 79 kWh có thể được xem là bất thường nếu nó lệch quá xa so với trung bình.
+
+### 18.2. Công thức Z-score
+
+Công thức:
+
+```text
+z_score = (x - mean) / std
+```
+
+Trong đó:
+
+| Thành phần | Ý nghĩa |
+|---|---|
+| `x` | Điện tiêu thụ của một ngày |
+| `mean` | Điện tiêu thụ trung bình/ngày |
+| `std` | Độ lệch chuẩn của điện tiêu thụ/ngày |
+| `z_score` | Mức độ lệch khỏi trung bình |
+
+### 18.3. Quy tắc đánh dấu bất thường
+
+Trong project này dùng ngưỡng:
+
+```text
+|z_score| > 3
+```
+
+Nếu một ngày có `z_score` lớn hơn 3 hoặc nhỏ hơn -3 thì ngày đó được đánh dấu là:
+
+```text
+Abnormal
+```
+
+Ngược lại:
+
+```text
+Normal
+```
+
+### 18.4. Output của bước này
+
+Script tạo hai file:
+
+```text
+outputs/tables/daily_consumption_with_zscore.csv
+outputs/tables/zscore_anomalies.csv
+```
+
+Trong đó:
+
+| File | Ý nghĩa |
+|---|---|
+| `daily_consumption_with_zscore.csv` | Toàn bộ ngày, có thêm z-score và status |
+| `zscore_anomalies.csv` | Chỉ các ngày bị xem là bất thường |
+
+### 18.5. Cách chạy
+
+Trước tiên cần có dữ liệu theo ngày:
+
+```powershell
+python src/resample_data.py
+```
+
+Sau đó chạy:
+
+```powershell
+python src/anomaly_detection.py
+```
+
 Các cột quan trọng:
 
 | Cột | Ý nghĩa |
