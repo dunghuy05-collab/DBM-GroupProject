@@ -551,6 +551,77 @@ File đầu ra:
 data/processed/daily_consumption.csv
 ```
 
+---
+
+## 17. Bước 5: EDA cơ bản
+
+Sau khi đã có dữ liệu theo giờ và theo ngày, ta bắt đầu phân tích khám phá dữ liệu.
+
+EDA là viết tắt của:
+
+```text
+Exploratory Data Analysis
+```
+
+Nghĩa là phân tích dữ liệu ban đầu để hiểu dữ liệu trước khi chạy mô hình.
+
+File code cho bước này:
+
+```text
+src/eda_analysis.py
+```
+
+### 17.1. Câu hỏi cần trả lời
+
+Bước EDA sẽ trả lời các câu hỏi:
+
+- Giờ nào trong ngày tiêu thụ điện cao nhất?
+- Tháng nào có mức tiêu thụ điện trung bình cao nhất?
+- Cuối tuần có dùng điện khác ngày thường không?
+- Top 10 ngày tiêu thụ điện cao nhất là ngày nào?
+- Mẫu tiêu thụ theo thứ trong tuần và giờ trong ngày trông như thế nào?
+
+### 17.2. Output của bước EDA
+
+Các bảng kết quả được lưu tại:
+
+```text
+outputs/tables/
+```
+
+Các biểu đồ được lưu tại:
+
+```text
+outputs/figures/
+```
+
+Một số output chính:
+
+| File | Ý nghĩa |
+|---|---|
+| `avg_consumption_by_hour.csv` | Điện tiêu thụ trung bình theo giờ |
+| `avg_daily_consumption_by_month.csv` | Điện tiêu thụ trung bình theo tháng |
+| `weekday_vs_weekend.csv` | So sánh ngày thường và cuối tuần |
+| `usage_heatmap_day_hour.csv` | Bảng heatmap thứ trong tuần x giờ |
+| `top_10_consumption_days.csv` | Top 10 ngày tiêu thụ điện cao nhất |
+| `avg_consumption_by_hour.png` | Biểu đồ tiêu thụ trung bình theo giờ |
+| `avg_daily_consumption_by_month.png` | Biểu đồ tiêu thụ trung bình theo tháng |
+| `usage_heatmap_day_hour.png` | Heatmap tiêu thụ điện |
+
+### 17.3. Cách chạy bước EDA
+
+Trước tiên cần có dữ liệu theo giờ và ngày:
+
+```powershell
+python src/resample_data.py
+```
+
+Sau đó chạy:
+
+```powershell
+python src/eda_analysis.py
+```
+
 Các cột quan trọng:
 
 | Cột | Ý nghĩa |
